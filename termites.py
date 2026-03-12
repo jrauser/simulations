@@ -181,6 +181,7 @@ def main():
     epoch_accum = 0.0
 
     running = True
+    paused = False
     while running:
         dt = clock.tick(60) / 1000.0
 
@@ -188,6 +189,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                paused = not paused
             for idx, slider in enumerate(sliders):
                 if slider.handle_event(event) and idx != 3:
                     reset_needed = True
@@ -196,6 +199,12 @@ def main():
             arena = new_arena()
             cell_size, ox, oy = compute_hex_layout(arena.radius, canvas_rect)
             epoch_accum = 0.0
+
+        if paused:
+            render_arena(screen, arena, canvas_rect, cell_size, ox, oy)
+            draw_panel(screen, font, control_rect, sliders)
+            pygame.display.flip()
+            continue
 
         epoch_accum += speed_s.value * dt
         n_epochs = int(epoch_accum)

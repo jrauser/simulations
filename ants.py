@@ -511,6 +511,7 @@ def main():
 
     epoch_accum = 0.0
     running = True
+    paused = False
 
     while running:
         dt = clock.tick(60) / 1000.0
@@ -519,6 +520,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                paused = not paused
             for idx, slider in enumerate(sliders):
                 if slider.handle_event(event) and idx not in (2, 3, 4):  # 2=Decay, 3=Drop, 4=Speed
                     reset_needed = True
@@ -526,6 +529,12 @@ def main():
         if reset_needed:
             world = new_world()
             epoch_accum = 0.0
+
+        if paused:
+            render(screen, world, canvas_rect, hex_size, ox, oy)
+            draw_panel(screen, font, control_rect, sliders)
+            pygame.display.flip()
+            continue
 
         world.pheromone_decay = 1.0 - decay_s.value / 100.0
         world.drop_max = drop_s.value

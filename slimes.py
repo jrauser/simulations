@@ -202,6 +202,7 @@ def main():
     cell_size, ox, oy = compute_hex_layout(int(size_s.value), canvas_rect)
     epoch_accum = 0.0
     running = True
+    paused = False
 
     while running:
         dt = clock.tick(60) / 1000.0
@@ -210,6 +211,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                paused = not paused
             for idx, slider in enumerate(sliders):
                 if slider.handle_event(event) and idx < 4:  # Size/Pop/Drop/Threshold reset
                     reset_needed = True
@@ -218,6 +221,12 @@ def main():
             world = new_world()
             cell_size, ox, oy = compute_hex_layout(int(size_s.value), canvas_rect)
             epoch_accum = 0.0
+
+        if paused:
+            render(screen, world, canvas_rect, cell_size, ox, oy)
+            draw_panel(screen, font, control_rect, sliders)
+            pygame.display.flip()
+            continue
 
         # Physics params update live without reset
         world.evaporation = evap_s.value / 100.0

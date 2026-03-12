@@ -401,6 +401,7 @@ def main():
 
     epoch_accum = 0.0
     running = True
+    paused = False
 
     while running:
         dt = clock.tick(60) / 1000.0
@@ -409,6 +410,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                paused = not paused
             for idx, slider in enumerate(sliders):
                 if slider.handle_event(event) and idx != 4:
                     reset_needed = True
@@ -417,6 +420,12 @@ def main():
             world = new_world()
             trail_surf.fill(COLOR_BG)
             epoch_accum = 0.0
+
+        if paused:
+            render(screen, world, canvas_rect, trail_surf, fade_surf, 0, scale, ox, oy)
+            draw_panel(screen, font, control_rect, sliders)
+            pygame.display.flip()
+            continue
 
         epoch_accum += speed_s.value * dt
         n_epochs = int(epoch_accum)
