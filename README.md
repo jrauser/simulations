@@ -5,6 +5,8 @@ A collection of toy agent-based simulations, inspired by Mitchell Resnick's book
 
 Each simulation runs in a pygame window with a control panel of sliders at the bottom.
 
+Everything vibe-coded with Claude Sonnet 4.6.
+
 ## Simulations
 
 ### Termites (`termites.py`)
